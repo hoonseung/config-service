@@ -9,7 +9,7 @@ env:
 jobs:
   build:
     name: Build and Test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write
@@ -39,6 +39,16 @@ jobs:
       with:
         sarif_file: ${{ steps.scan.outputs.sarif }}
 
+    - name: Setup tools
+      uses: alexellis/setup-arkade@v3
+    - name: Install tools
+      uses: alexellis/arkade-get@master
+      with:
+        kubeconform: latest
+    - name: Validate Kubernetes manifests
+      run: |
+        kubeconform --strict k8s     
+
     - name: Build, unit tests and integration tests
       run: |
         chmod +x gradlew
@@ -48,7 +58,7 @@ jobs:
     name: Package and Publish
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: [ build ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
