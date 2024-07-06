@@ -17,7 +17,23 @@ spring:
       server:
         git:
           uri: https://github.com/hoonseung/config-repo.git
-          default-label: main
-          clone-on-start: true #
-          timeout: 5 #
-          force-pull: true #
+          default-label: main # 가져올 브랜치
+          clone-on-start: true # 시작시 복사
+          timeout: 5
+          force-pull: true # 강제 업데이트로 동기화
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
